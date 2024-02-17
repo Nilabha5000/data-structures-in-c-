@@ -1,8 +1,8 @@
 #include <iostream>
 
-void mergesort(int *,int ,int);
+void mergesort(int *,int);
 
-void merge(int*,int,int);
+void merge(int*,int*,int*,int ,int);
 int main()
 {
     int *arr = NULL;
@@ -17,7 +17,7 @@ int main()
         std::cin>>arr[i];
     }
     
-    mergesort(arr,0,n-1);
+    mergesort(arr,n);
 
     for (int i = 0; i < n; i++)
     {
@@ -27,56 +27,66 @@ int main()
     return 0;
 }
 
-void mergesort(int *arr, int l , int r)
+void mergesort(int *arr, int n)
 {
 
-    if(r <= l)
+    if(n == 1)
        return;
-    int mid = (l+r)/2;
+    int mid =  (n-1)/2;
+    int n1 = mid+1 , n2 = n - (mid+1);
+    int *arr1 = new int[n1];
+    int *arr2 = new int[n2];
 
-    mergesort(arr,l,mid);
-    mergesort(arr,mid+1,r);
-    
-    merge(arr,l,r);
-    
-}
-
-void merge(int *arr , int l , int r){
-    
-    int mid = 0;
-    int *arr1 = NULL , *arr2 = NULL;
-    
-    mid = (l+r)/2;
-    arr1 = new int[(mid - l)+1];
-    arr2 = new int[(r - (mid+1))+1];
-
-    for(int i = 0; i < (mid - l)+1; ++i)
+    for (int i = 0; i < n1; i++)
+    {
         arr1[i] = arr[i];
-    for(int i = 0, j = mid+1; i < (r-(mid+1))+1 && j <= r; ++i,++j)
-    {
-          arr2[i] = arr[j];
     }
 
-    int i = 0 , j = 0;
-
-    int n = (mid-l)+1 , m = (r - (mid+1))+1;
-
-    while(i < n && j < m)
-    {
-        if(arr1[i] < arr2[j]){
-           arr[l++] = arr1[i];
-           i++;
-        }
-        else
-           arr[l++] = arr2[j++];
+    for(int i = 0 , j = mid+1; i < n2 && j < n; ++i,++j){
+           arr2[i] = arr[j];
     }
-
-    while(i < n)
-      arr[l++] = arr1[i++];
+     
+    mergesort(arr1,(mid+1));
+    mergesort(arr2,n-(mid+1));
     
-    while(j < m)
-      arr[l++] = arr2[j++];
+    merge(arr1,arr2,arr,mid+1,(n-(mid+1)));
 
     delete [] arr1;
     delete [] arr2;
+    
+}
+
+void merge(int *arr1 , int *arr2 ,int *arr3 ,int n1 ,int n2)
+{
+    int i = 0 , j = 0;
+    int Li = -1;
+    
+    while(i < n1 && j < n2)
+    {
+        if(arr1[i] < arr2[j])
+        {
+           arr3[++Li] = arr1[i];
+            i++;
+        }
+
+        else{
+
+            arr3[++Li] = arr2[j];
+            j++;
+        }
+    }
+
+
+    while(i < n1)
+    {
+        arr3[++Li] = arr1[i];
+        i++;
+    }
+
+    while(j < n2)
+    {
+        arr3[++Li] = arr2[j];
+        j++;
+    }
+      
 }
